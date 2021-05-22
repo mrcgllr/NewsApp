@@ -1,6 +1,7 @@
 package com.medium.newsapp.di
 
 import com.medium.newsapp.service.ApiService
+import com.medium.newsapp.util.Constants.API_KEY
 import com.medium.newsapp.util.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides
@@ -31,7 +32,13 @@ object NetworkModule {
     fun provideOkHttpClient(
         loggingInterceptor: HttpLoggingInterceptor
     ): OkHttpClient {
-        return OkHttpClient.Builder()
+        return OkHttpClient.Builder().addInterceptor { chain ->
+            val request = chain.request().newBuilder()
+            val originalHttpUrl = chain.request().url
+            val url = originalHttpUrl.newBuilder().addQueryParameter("apiKey", API_KEY).build()
+            request.url(url)
+            return@addInterceptor chain.proceed(request.build())
+        }
             .addInterceptor(loggingInterceptor)
             .build()
     }
