@@ -10,6 +10,6 @@ class NewsRepository @Inject constructor(private val network: ApiService) {
 
 
     suspend fun getArticles(): List<Article> = withContext(Dispatchers.IO) {
-        network.getTopHeadlines()
+        return@withContext network.getTopHeadlines().articles
     }
 }
