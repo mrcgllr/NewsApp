@@ -1,7 +1,6 @@
 package com.medium.newsapp.ui.newslist
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,19 +12,19 @@ import com.medium.newsapp.databinding.FragmentNewsBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class NewsFragment :Fragment(){
+class NewsFragment : Fragment() {
 
-    private var _binding:FragmentNewsBinding?=null
+    private var _binding: FragmentNewsBinding? = null
     private val binding get() = _binding!!
 
-    private val newsVM:NewsViewModel by viewModels()
+    private val newsVM: NewsViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_news,container,false)
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_news, container, false)
         return binding.root
     }
 
@@ -35,10 +34,19 @@ class NewsFragment :Fragment(){
     }
 
     private fun initObservers() {
-        newsVM.apply {
+        with(newsVM){
             getArticles()
-            articlesLivedata.observe(viewLifecycleOwner,{
-                Log.d("LOGGG",it.toString())
+            binding.apply {
+                lifecycleOwner = this@NewsFragment
+                viewModel = newsVM
+            }
+
+            articlesLivedata.observe(viewLifecycleOwner, {
+
+            })
+
+            errorMessage.observe(viewLifecycleOwner, {
+
             })
         }
     }
