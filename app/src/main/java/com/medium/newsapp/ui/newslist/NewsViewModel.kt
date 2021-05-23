@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.medium.newsapp.model.Article
 import com.medium.newsapp.repository.NewsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,7 +19,7 @@ class NewsViewModel @Inject constructor(
     private val _articlesLiveData: MutableLiveData<List<Article>> = MutableLiveData(emptyList())
     val articlesLivedata: LiveData<List<Article>> = _articlesLiveData
 
-    private val _errorMessage: MutableLiveData<String> = MutableLiveData("")
+    private val _errorMessage: MutableLiveData<String> = MutableLiveData()
     val errorMessage: LiveData<String> = _errorMessage
 
     private val _isLoading: MutableLiveData<Boolean> = MutableLiveData(true)
@@ -28,8 +27,7 @@ class NewsViewModel @Inject constructor(
 
     fun getArticles() = viewModelScope.launch {
         try {
-            val response = newsRepository.getArticles()
-            _articlesLiveData.value = response
+            _articlesLiveData.value = newsRepository.getArticles()
         }catch (exception:Exception){
             _errorMessage.value = exception.localizedMessage
         }finally {
