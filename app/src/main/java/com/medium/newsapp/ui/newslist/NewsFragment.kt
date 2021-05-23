@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -18,6 +19,7 @@ class NewsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val newsVM: NewsViewModel by viewModels()
+    private val newsAdapter = NewsAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,14 +41,19 @@ class NewsFragment : Fragment() {
             binding.apply {
                 lifecycleOwner = this@NewsFragment
                 viewModel = newsVM
+
+                recyclerNews.adapter = newsAdapter
             }
 
             articlesLivedata.observe(viewLifecycleOwner, {
-
+                newsAdapter.apply {
+                    setArticles(it.toMutableList())
+                    notifyDataSetChanged()
+                }
             })
 
             errorMessage.observe(viewLifecycleOwner, {
-
+                Toast.makeText(requireContext(),it,Toast.LENGTH_SHORT).show()
             })
         }
     }
